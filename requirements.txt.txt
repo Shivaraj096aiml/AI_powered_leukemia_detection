@@ -1,0 +1,173 @@
+tensorflow
+keras
+numpy
+pandas
+matplotlib
+seaborn
+scikit-learn
+opencv-python
+Pillow
+tqdm
+
+
+
+
+Requirements Explanation
+1️⃣ TensorFlow
+
+Purpose: Main deep learning framework used to build and train neural networks.
+
+Why you used it:
+
+Load pretrained models like ResNet, EfficientNet, ConvNeXt
+
+Train the CNN model
+
+Perform backpropagation and optimization
+
+Example use in your notebook:
+
+import tensorflow as tf
+model.fit(train_data, epochs=15)
+
+2️⃣ Keras
+
+Purpose: High-level API built on top of TensorFlow to design neural networks easily.
+
+Why it is used:
+
+Build model layers
+
+Compile models
+
+Train and evaluate models
+
+Example:
+
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Dense
+
+3️⃣ NumPy
+
+Purpose: Used for numerical operations and working with arrays.
+
+Why it is used:
+
+Image data converted into arrays
+
+Mathematical calculations during preprocessing
+
+Example:
+
+import numpy as np
+img_array = np.array(image)
+
+4️⃣ Pandas
+
+Purpose: Used to manage and analyze structured data.
+
+Why it is used:
+
+Create dataframe containing image paths and labels
+
+Organize dataset
+
+Example:
+
+import pandas as pd
+df = pd.DataFrame({'filepath': paths, 'label': labels})
+
+5️⃣ Matplotlib
+
+Purpose: Used for visualizing graphs.
+
+Why it is used:
+
+Plot training accuracy
+
+Plot loss curves
+
+Show sample images
+
+Example:
+
+import matplotlib.pyplot as plt
+plt.plot(history.history['accuracy'])
+
+6️⃣ Seaborn
+
+Purpose: Advanced visualization built on Matplotlib.
+
+Why it is used:
+
+Create confusion matrix heatmap
+
+Improve visualization quality
+
+Example:
+
+import seaborn as sns
+sns.heatmap(confusion_matrix)
+
+7️⃣ scikit-learn
+
+Purpose: Provides machine learning utilities.
+
+Why it is used:
+
+Train/test split
+
+Model evaluation metrics
+
+Example:
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+8️⃣ OpenCV
+
+Purpose: Used for image processing.
+
+Why it is used:
+
+Read images
+
+Resize images
+
+Image preprocessing
+
+Example:
+
+import cv2
+img = cv2.imread("image.jpg")
+
+9️⃣ Pillow
+
+Purpose: Another image processing library.
+
+Why it is used:
+
+Load and manipulate images
+
+Used internally by TensorFlow image generators
+
+Example:
+
+from PIL import Image
+img = Image.open("image.jpg")
+
+🔟 tqdm
+
+Purpose: Shows progress bar during loops or dataset loading.
+
+Why it is used:
+
+Track dataset loading progress
+
+Helpful for large datasets
+
+Example:
+
+from tqdm import tqdm
+for file in tqdm(files):
+    process(file)

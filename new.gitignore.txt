@@ -1,0 +1,8 @@
+dataset/
+data/
+*.h5
+*.pt
+*.pth
+*.zip
+*.csv
+*.mp4

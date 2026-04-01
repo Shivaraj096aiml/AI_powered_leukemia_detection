@@ -1,0 +1,143 @@
+# =========================
+# Leukemia Detection Model
+# =========================
+
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import cv2
+
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix
+
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# =========================
+# DATA LOADING
+# =========================
+
+data_dir = "dataset"   # 🔴 CHANGE THIS PATH
+
+filepaths = []
+labels = []
+
+for folder in os.listdir(data_dir):
+    folder_path = os.path.join(data_dir, folder)
+    
+    for file in os.listdir(folder_path):
+        filepaths.append(os.path.join(folder_path, file))
+        labels.append(folder)
+
+df = pd.DataFrame({
+    "filepath": filepaths,
+    "label": labels
+})
+
+# =========================
+# TRAIN TEST SPLIT
+# =========================
+
+train_df, temp_df = train_test_split(df, train_size=0.8, stratify=df['label'], random_state=42)
+valid_df, test_df = train_test_split(temp_df, train_size=0.5, stratify=temp_df['label'], random_state=42)
+
+# =========================
+# IMAGE GENERATOR
+# =========================
+
+img_size = (224, 224)
+batch_size = 32
+
+train_gen = ImageDataGenerator(rescale=1./255)
+val_gen = ImageDataGenerator(rescale=1./255)
+
+train_data = train_gen.flow_from_dataframe(
+    train_df,
+    x_col='filepath',
+    y_col='label',
+    target_size=img_size,
+    class_mode='categorical',
+    batch_size=batch_size
+)
+
+val_data = val_gen.flow_from_dataframe(
+    valid_df,
+    x_col='filepath',
+    y_col='label',
+    target_size=img_size,
+    class_mode='categorical',
+    batch_size=batch_size
+)
+
+# =========================
+# MODEL BUILDING
+# =========================
+
+model = Sequential([
+    Conv2D(32, (3,3), activation='relu', input_shape=(224,224,3)),
+    MaxPooling2D(2,2),
+
+    Conv2D(64, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+
+    Conv2D(128, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+
+    Flatten(),
+
+    Dense(128, activation='relu'),
+    Dropout(0.5),
+
+    Dense(train_data.num_classes, activation='softmax')
+])
+
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+model.summary()
+
+# =========================
+# TRAINING
+# =========================
+
+history = model.fit(
+    train_data,
+    validation_data=val_data,
+    epochs=10
+)
+
+# =========================
+# EVALUATION
+# =========================
+
+test_gen = ImageDataGenerator(rescale=1./255)
+
+test_data = test_gen.flow_from_dataframe(
+    test_df,
+    x_col='filepath',
+    y_col='label',
+    target_size=img_size,
+    class_mode='categorical',
+    batch_size=batch_size,
+    shuffle=False
+)
+
+preds = model.predict(test_data)
+y_pred = np.argmax(preds, axis=1)
+
+print("\nClassification Report:\n")
+print(classification_report(test_data.classes, y_pred))
+
+# =========================
+# SAVE MODEL
+# =========================
+
+model.save("leukemia_model.h5")
+
+print("✅ Model saved successfully!")
